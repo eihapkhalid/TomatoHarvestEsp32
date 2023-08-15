@@ -24,7 +24,7 @@ int soilMoistureValues[numSoilMoisture];
 float temperature[8];
 float humidity[8];
 
-
+Adafruit_MCP3008 adc; // Create an instance of MCP3008
 void setup() {
 
 }
