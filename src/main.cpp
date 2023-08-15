@@ -65,4 +65,6 @@ void loop() {
       temperature[i] = dht[i].getTemperature();
       humidity[i] = dht[i].getHumidity();
     }
+  }
+
 }
