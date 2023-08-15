@@ -65,6 +65,14 @@ void loop() {
       temperature[i] = dht[i].getTemperature();
       humidity[i] = dht[i].getHumidity();
     }
+    
   }
-
+   // Read and send to the LDR sensor every specified period of time
+  if (currentMillis - previousLDRTime >= ldrInterval) {
+    previousLDRTime = currentMillis;
+    for (int i = 0; i < numLDR; i++) {
+      ldrValues[i] = adc.readADC(i);
+    }
+    
+  }
 }
