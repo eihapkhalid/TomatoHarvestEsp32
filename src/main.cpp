@@ -26,6 +26,11 @@ float humidity[8];
 
 Adafruit_MCP3008 adc; // Create an instance of MCP3008
 
+//previous Time for sensors
+unsigned long previousDHTTime = 0;
+unsigned long previousLDRTime = 0;
+unsigned long previousSoilMoistureTime = 0;
+
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -52,4 +57,12 @@ void loop() {
   const unsigned long dhtInterval = 900000; // 15 minutes
   const unsigned long ldrInterval = 3600000; // hour
   const unsigned long soilMoistureInterval = 1800000; // half an hour
+
+   // Read and send to the DHT sensor every specified period of time
+  if (currentMillis - previousDHTTime >= dhtInterval) {
+    previousDHTTime = currentMillis;
+    for (int i = 0; i < 8; i++) {
+      temperature[i] = dht[i].getTemperature();
+      humidity[i] = dht[i].getHumidity();
+    }
 }
