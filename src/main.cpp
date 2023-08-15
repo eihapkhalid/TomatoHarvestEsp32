@@ -46,5 +46,10 @@ void setup() {
 }
 
 void loop() {
+  unsigned long currentMillis = millis();
 
+// Define the intervals for each type of sensor
+  const unsigned long dhtInterval = 900000; // 15 minutes
+  const unsigned long ldrInterval = 3600000; // hour
+  const unsigned long soilMoistureInterval = 1800000; // half an hour
 }
