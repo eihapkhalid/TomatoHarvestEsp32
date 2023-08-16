@@ -66,14 +66,6 @@ void loop() {
       humidity[i] = dht[i].getHumidity();
     }
 
-  }
-   // Read and send to the LDR sensor every specified period of time
-  if (currentMillis - previousLDRTime >= ldrInterval) {
-    previousLDRTime = currentMillis;
-    for (int i = 0; i < numLDR; i++) {
-      ldrValues[i] = adc.readADC(i);
-    }
-    
     // Prepare data to be sent to the server
     String jsonDataDHT = "[";
     for (int i = 0; i < 8; i++) {
@@ -94,6 +86,33 @@ void loop() {
     Serial.print("DHT response code: ");
     Serial.println(httpResponseCodeDHT);
   }
+   // Read and send to the LDR sensor every specified period of time
+  if (currentMillis - previousLDRTime >= ldrInterval) {
+    previousLDRTime = currentMillis;
+    for (int i = 0; i < numLDR; i++) {
+      ldrValues[i] = adc.readADC(i);
+    }
+    // Prepare data to be sent to the server
+    String jsonDataLDR = "[";
+    for (int i = 0; i < numLDR; i++) {
+      jsonDataLDR += "{\"sensor\": " + String(i) + ", \"ldr\": " + String(ldrValues[i]) + "}";
+      if (i < numLDR - 1) {
+        jsonDataLDR += ",";
+      }
+    }
+    jsonDataLDR += "]";
+
+      // Send LDR data to the server
+    HTTPClient httpLDR;
+    httpLDR.begin(serverUrl);
+    httpLDR.addHeader("Content-Type", "application/json");
+    int httpResponseCodeLDR = httpLDR.POST(jsonDataLDR);
+    httpLDR.end();
+
+    Serial.print("كود الاستجابة للـ LDR: ");
+    Serial.println(httpResponseCodeLDR);
+    
+  }
 
    // Read and send to the SoilMoisture sensor every specified period of time
   if (currentMillis - previousSoilMoistureTime >= soilMoistureInterval) {
@@ -102,5 +121,24 @@ void loop() {
       soilMoistureValues[i] = adc.readADC(8 + i);
     }
     
+    // Prepare data to be sent to the server
+    String jsonDataSoilMoisture = "[";
+    for (int i = 0; i < numSoilMoisture; i++) {
+      jsonDataSoilMoisture += "{\"sensor\": " + String(i) + ", \"soilMoisture\": " + String(soilMoistureValues[i]) + "}";
+      if (i < numSoilMoisture - 1) {
+        jsonDataSoilMoisture += ",";
+      }
+    }
+    jsonDataSoilMoisture += "]";
+
+    // Send SoilMoisture data to the server
+    HTTPClient httpSoilMoisture;
+    httpSoilMoisture.begin(serverUrl);
+    httpSoilMoisture.addHeader("Content-Type", "application/json");
+    int httpResponseCodeSoilMoisture = httpSoilMoisture.POST(jsonDataSoilMoisture);
+    httpSoilMoisture.end();
+
+    Serial.print("كود الاستجابة لرطوبة التربة: ");
+    Serial.println(httpResponseCodeSoilMoisture);
   }
 }
