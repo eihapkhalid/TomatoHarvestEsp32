@@ -74,6 +74,25 @@ void loop() {
       ldrValues[i] = adc.readADC(i);
     }
     
+    // Prepare data to be sent to the server
+    String jsonDataDHT = "[";
+    for (int i = 0; i < 8; i++) {
+      jsonDataDHT += "{\"sensor\": " + String(i) + ", \"temperature\": " + String(temperature[i]) + ", \"humidity\": " + String(humidity[i]) + "}";
+      if (i < 7) {
+        jsonDataDHT += ",";
+      }
+    }
+    jsonDataDHT += "]";
+
+    // Send DHT data to the server
+    HTTPClient httpDHT;
+    httpDHT.begin(serverUrl);
+    httpDHT.addHeader("Content-Type", "application/json");
+    int httpResponseCodeDHT = httpDHT.POST(jsonDataDHT);
+    httpDHT.end();
+
+    Serial.print("DHT response code: ");
+    Serial.println(httpResponseCodeDHT);
   }
 
    // Read and send to the SoilMoisture sensor every specified period of time
