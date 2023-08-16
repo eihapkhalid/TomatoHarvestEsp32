@@ -102,7 +102,7 @@ void loop() {
     }
     jsonDataLDR += "]";
 
-      // Send LDR data to the server
+    // Send LDR data to the server
     HTTPClient httpLDR;
     httpLDR.begin(serverUrl);
     httpLDR.addHeader("Content-Type", "application/json");
@@ -120,7 +120,7 @@ void loop() {
     for (int i = 0; i < numSoilMoisture; i++) {
       soilMoistureValues[i] = adc.readADC(8 + i);
     }
-    
+
     // Prepare data to be sent to the server
     String jsonDataSoilMoisture = "[";
     for (int i = 0; i < numSoilMoisture; i++) {
